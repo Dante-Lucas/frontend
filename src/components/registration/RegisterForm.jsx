@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-
+import { useNavigate } from "react-router-dom";
+import { getCsrfToken } from "../../../scripts/cookies";
 export const RegisterForm = () => {
   // username é o a variavel com valor inicial e setusername é a função que atualiza a variavel username
   //formamto do state = [valor,função que atualiza o valor]
@@ -9,21 +10,35 @@ export const RegisterForm = () => {
   const [password,setPassword] = useState("")
   const [confirmPassword,setConfirmPassword] = useState("")
   const [telefone,setTelefone] = useState("")
+  const [data,setdata] = useState("")
   const [error,setError] = useState("")
-  const handlersubmit  = (e) => {
-    e.preventDefault()
-    if (username.trim() === '') {
-      setError("Por favor, insira um nome de usuário.")
-      setTimeout((error) => {
-        error.
-      })
+  const csrftoken = getCsrfToken()
+  const navigate = useNavigate()
+  const handlersubmit  = async(e) => {
+    e.preventDefault();
+    try{
+      const response = await fetch("http://127.0.0.1:8000/api/v1/register/",{
+        method: 'POST',
+        headers:{
+        'Content-Type': 'application/json',
+        'X-CSRFToken': csrftoken,
+      },
+      body:JSON.stringify({username,email,password,confirmPassword,telefone})
+    })
+    if(response.ok){
+      navigate("/login")
+      setdata(`Cadastro realizado com sucesso!`)
     }
-
+    console.log(await response.json()) 
+    throw new Error(error)
+    } catch(error){
+      setError(error)
+    }
   }
 
     return (
         <form onSubmit={handlersubmit}  id="form_register"  className="space-y-4 md:space-y-6"  method="POST">
-  
+        {data && <p>{data}</p>}
         <div className="relative z-0 w-full mb-5 group">
           {/* forma de renderizar um valor no html*/}
           {error && <p>{error}</p>}
