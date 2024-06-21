@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-import { getCsrfToken } from "../../../scripts/cookies";
+import { getCsrfToken } from "../../scripts/cookies";
+import { Input } from "../inputs/Input";
 export const RegisterForm = () => {
   // username é o a variavel com valor inicial e setusername é a função que atualiza a variavel username
   //formamto do state = [valor,função que atualiza o valor]
@@ -10,12 +11,16 @@ export const RegisterForm = () => {
   const [password,setPassword] = useState("")
   const [confirmPassword,setConfirmPassword] = useState("")
   const [telefone,setTelefone] = useState("")
-  const [data,setdata] = useState("")
+  //const [data,setdata] = useState("")
+  const [message,setMessage] = useState("")
   const [error,setError] = useState("")
   const csrftoken = getCsrfToken()
   const navigate = useNavigate()
   const handlersubmit  = async(e) => {
     e.preventDefault();
+    if (username.trim() ===''){
+      setError("Preencha o campo username")
+    }
     try{
       const response = await fetch("http://127.0.0.1:8000/api/v1/register/",{
         method: 'POST',
@@ -25,11 +30,15 @@ export const RegisterForm = () => {
       },
       body:JSON.stringify({username,email,password,confirmPassword,telefone})
     })
+
+    const result = await response.json()
     if(response.ok){
       navigate("/login")
-      setdata(`Cadastro realizado com sucesso!`)
+      setMessage(result.success ||`Cadastro realizado com sucesso!`)
+    } else {
+      setError(result.error)
     }
-    console.log(await response.json()) 
+    
     throw new Error(error)
     } catch(error){
       setError(error)
@@ -37,37 +46,90 @@ export const RegisterForm = () => {
   }
 
     return (
-        <form onSubmit={handlersubmit}  id="form_register"  className="space-y-4 md:space-y-6"  method="POST">
-        {data && <p>{data}</p>}
-        <div className="relative z-0 w-full mb-5 group">
-          {/* forma de renderizar um valor no html*/}
-          {error && <p>{error}</p>}
-          <input type="text" name="name" id="name" value={username} onChange={e => setUsername(e.target.value)} className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" "  />
-          <label htmlFor="name" className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Username</label>
-        </div>
+      <form onSubmit={handlersubmit}  id="form_register"  className="space-y-4 md:space-y-6"  method="POST">
+        {/* forma de renderizar um valor no html*/}
+        {
+          message && 
+          <div className="p-4 mb-4 text-sm rounded-lg">
+            <span className=" font-medium text-green-800  bg-green-50 dark:bg-gray-800 dark:text-green-400">
+              {message}
+            </span>
+          </div>
+        }
+
+        {
+          error && 
+          <div>
+            <span className="font-medium text-red-800 bg-red-50 dark:bg-gray-800 dark:text-red-400">
+              {error}
+            </span>
+          </div>
+        }
+        
+        <Input 
+          label="Username" 
+          htmlfor='username' 
+          type="text" 
+          name="username" 
+          id="username" 
+          value={username} 
+          onChange={e => setUsername(e.target.value)} 
+          placeholder=""
+        />
   
-        <div className="relative z-0 w-full mb-5 group">
-          <input type="email" name="email" id="email" value={email} onChange={e => setEmail(e.target.value)} className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " required />
-          <label htmlFor="email" className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Email address</label>
-        </div>
+        
+        <Input 
+          label='Email' 
+          htmlfor='email' 
+          type="email" 
+          name="email" 
+          id="email" 
+          value={email} 
+          onChange={e => setEmail(e.target.value)} 
+          placeholder=''
+        />
+       
   
-        <div className="relative z-0 w-full mb-5 group">
-          <input type="password" name="password" id="password" value={password} onChange={e => setPassword(e.target.value)} className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " required />
-          <label htmlFor="password" className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Password</label>
-        </div>
+        
+        <Input 
+          label='Password' 
+          htmlfor='password' 
+          type="password" 
+          name="password" 
+          id="password" 
+          value={password} 
+          onChange={e => setPassword(e.target.value)} 
+          placeholder=''
+        />
+        
   
-        <div className="relative z-0 w-full mb-5 group">
-          <input type="password" name="repeat_password" id="repeat_password" value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)} className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " required />
-          <label htmlFor="repeat_password" className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Confirm password</label>
-        </div>
+        
+        <Input 
+          label='Confirm Password' 
+          htmlfor='confirmPassword' 
+          type="password" 
+          name="confirmPassword" 
+          id="confirmPassword" 
+          value={confirmPassword} 
+          onChange={e => setConfirmPassword(e.target.value)} 
+          placeholder=''/>
+        
   
-        <div className="relative z-0 w-full mb-5 group">
-          <input type="text" name="telefone" id="telefone" value={telefone} onChange={e=> setTelefone(e.target.value)} className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"  placeholder=" " required />
-          <label htmlFor="telefone" className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Número de contato</label>
-        </div>
+        
+        <Input 
+          label='Telefone' 
+          htmlfor='telefone' 
+          type="text" 
+          name="telefone" 
+          id="telefone" 
+          value={telefone} 
+          onChange={e => setTelefone(e.target.value)} 
+          placeholder=''
+        />
+        
   
         <div className="flex items-start">
-          <div className="flex items-center h-5">
+          <div className="flex items-center h-5 ">
             <input id="terms" aria-describedby="terms" type="checkbox" className="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-primary-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-primary-600 dark:ring-offset-gray-800" required />
           </div>
           <div className="ml-3 text-sm">
