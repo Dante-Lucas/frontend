@@ -1,5 +1,28 @@
 import Sidebar from "../../components/partials/Sidebar"
-export function Produtos() {
+import { useState,useEffect } from "react"
+export const Produtos = () => {
+    const [produto,setProduto] = useState([]);
+    
+    const fetch = async () => {
+        try{
+            const response = await fetch('http://localhost:8000/api/v1/produto',{
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',    
+                },
+        })
+            const result = await response.json()
+            if(response.ok){
+                   setProduto(result)
+                   console.log(result.listar_produto)
+            }
+        } catch(error){
+            console.log(error)
+        }
+} 
+//fetch()
+         
+
     return (
         <div>
             <Sidebar />
@@ -16,13 +39,14 @@ export function Produtos() {
                             </tr>
                         </thead>
                         <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-                            
-                                <tr>
-                                    <td className="px-4 py-3 whitespace-nowrap text-center text-sm font-medium text-gray-900 dark:text-gray-100"><a className="hover:bg-gray-700 px-3 py-1 rounded-lg">Cerveja</a></td>
-                                    <td className="px-4 py-3 whitespace-nowrap text-center text-sm text-gray-700 dark:text-gray-300"></td>
-                                    <td className="px-4 py-3 whitespace-nowrap text-center text-sm text-gray-700 dark:text-gray-300"></td>
-                                    <td className="px-4 py-3 whitespace-nowrap text-center text-sm text-gray-700 dark:text-gray-300"></td>
+                            {produto.map(produto => (
+                                <tr key={produto.id}>
+                                    <td  className="px-4 py-3 whitespace-nowrap text-center text-sm font-medium text-gray-900 dark:text-gray-100"><a className="hover:bg-gray-700 px-3 py-1 rounded-lg">{produto.nome_produto}</a></td>
+                                    <td className="px-4 py-3 whitespace-nowrap text-center text-sm text-gray-700 dark:text-gray-300">{produto.descricao}</td>
+                                    <td className="px-4 py-3 whitespace-nowrap text-center text-sm text-gray-700 dark:text-gray-300">{produto.preco}</td>
+                                    <td className="px-4 py-3 whitespace-nowrap text-center text-sm text-gray-700 dark:text-gray-300">{produto.estoque}</td>
                                 </tr>
+                            ))}
                             
                         </tbody>
                     </table>
