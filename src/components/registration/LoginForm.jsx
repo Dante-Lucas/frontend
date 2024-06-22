@@ -1,31 +1,42 @@
-import { Link } from "react-router-dom";
+import { Link,useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { Input } from "../inputs/Input";
+import { getCsrfToken } from "../../scripts/cookies";
+import { setCsrfToken } from "../../scripts/cookies";
 export function LoginForm() {
     const [username,setUsername] = useState("")
     const [password,setPassword] = useState("")
-    
+    const [message,setMessage] = useState("")
+    const csrftoken = getCsrfToken()
+    const navigate = useNavigate()
     const handlersubmit  = async(e) => {
         e.preventDefault();
         if (username.trim() ===''){
-            alert("Preencha o campo username")
+            setMessage("Preencha o campo username")
         }
 
         try{
-        const response = await fetch("http://127.0.0.1:8000/api/v1/login/",{
-            method: 'POST',
-            headers:{
-                'Content-Type': 'application/json',
+            const response = await fetch("http://127.0.0.1:8000/api/v1/login/",{
+              method: 'POST',
+              headers:{
+              'Content-Type': 'application/json',
+              'X-CSRFToken': csrftoken,
             },
             body:JSON.stringify({username,password})
-        })
-        const result = await response.json()
-        localStorage.setItem('csrf_token', result.data.csrf_token)
-        
+          })
+      
+          const result = await response.json()
+          if(response.ok){
+            //setMessage(result.success ||`Cadastro realizado com sucesso!`)
+            setCsrfToken(result.token)
+            navigate("/produto")
+          } else {
+            setError(result.error)
+          }
         } catch (error){
             console.log(error)
         }
-}
+    }
         
     return (
         <form id="form-login" onSubmit={handlersubmit} className="space-y-4 md:space-y-6"   method="POST">

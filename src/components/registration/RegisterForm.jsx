@@ -21,6 +21,10 @@ export const RegisterForm = () => {
     if (username.trim() ===''){
       setError("Preencha o campo username")
     }
+    if(password !== confirmPassword){
+      setError("As senhas precisam ser iguais")
+    }
+
     try{
       const response = await fetch("http://127.0.0.1:8000/api/v1/register/",{
         method: 'POST',
@@ -33,13 +37,13 @@ export const RegisterForm = () => {
 
     const result = await response.json()
     if(response.ok){
-      navigate("/login")
       setMessage(result.success ||`Cadastro realizado com sucesso!`)
+      navigate("/login")
     } else {
       setError(result.error)
     }
     
-    throw new Error(error)
+    //throw new Error(error)
     } catch(error){
       setError(error)
     }
