@@ -7,7 +7,6 @@ export function LoginForm() {
     const [username,setUsername] = useState("")
     const [password,setPassword] = useState("")
     const [message,setMessage] = useState("")
-    const csrftoken = getCsrfToken()
     const navigate = useNavigate()
     const handlersubmit  = async(e) => {
         e.preventDefault();
@@ -20,7 +19,6 @@ export function LoginForm() {
               method: 'POST',
               headers:{
               'Content-Type': 'application/json',
-              'X-CSRFToken': csrftoken,
             },
             body:JSON.stringify({username,password})
           })
@@ -28,7 +26,7 @@ export function LoginForm() {
           const result = await response.json()
           if(response.ok){
             //setMessage(result.success ||`Cadastro realizado com sucesso!`)
-            setCsrfToken(result.token)
+            localStorage.setItem("token",result.token)
             navigate("/produto")
           } else {
             setError(result.error)
@@ -42,7 +40,7 @@ export function LoginForm() {
         <form id="form-login" onSubmit={handlersubmit} className="space-y-4 md:space-y-6"   method="POST">
             <Input 
                 label="Username" 
-                htmlfor='username' 
+                htmlFor='username' 
                 type="text" 
                 name="username" 
                 id="username" 
@@ -53,7 +51,7 @@ export function LoginForm() {
             
             <Input 
                 label='Password' 
-                htmlfor='password' 
+                htmlFor='password' 
                 type="password" 
                 name="password" 
                 id="password" 

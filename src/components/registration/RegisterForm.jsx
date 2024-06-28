@@ -72,7 +72,7 @@ export const RegisterForm = () => {
         
         <Input 
           label="Username" 
-          htmlfor='username' 
+          htmlFor='username' 
           type="text" 
           name="username" 
           id="username" 
@@ -84,7 +84,7 @@ export const RegisterForm = () => {
         
         <Input 
           label='Email' 
-          htmlfor='email' 
+          htmlFor='email' 
           type="email" 
           name="email" 
           id="email" 
@@ -97,7 +97,7 @@ export const RegisterForm = () => {
         
         <Input 
           label='Password' 
-          htmlfor='password' 
+          htmlFor='password' 
           type="password" 
           name="password" 
           id="password" 
@@ -110,7 +110,7 @@ export const RegisterForm = () => {
         
         <Input 
           label='Confirm Password' 
-          htmlfor='confirmPassword' 
+          htmlFor='confirmPassword' 
           type="password" 
           name="confirmPassword" 
           id="confirmPassword" 
@@ -122,7 +122,7 @@ export const RegisterForm = () => {
         
         <Input 
           label='Telefone' 
-          htmlfor='telefone' 
+          htmlFor='telefone' 
           type="text" 
           name="telefone" 
           id="telefone" 

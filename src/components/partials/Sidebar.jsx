@@ -1,14 +1,34 @@
 import { Link,useNavigate } from "react-router-dom";
-import { useState } from "react";
-import { deleteCsrfToken } from "../../scripts/cookies";
+import { useState,useEffect } from "react";
+
 const Sidebar = () => {
     const [isOpen, setIsOpen] = useState(false);
     const navigate = useNavigate();
     
-    const logout = () => {
-        deleteCsrfToken()
-        navigate('/login')
-      }
+    const handlelogout = async () => {
+      try {
+        const response = await fetch('http://localhost:8000/api/v1/logout/', {
+            method: 'POST',
+            headers: {
+                'Authorization': `Token ${localStorage.getItem('token')}`,
+                'Content-Type': 'application/json',
+            }
+        });
+  
+        if (response.ok) {
+            // Limpar o token do localStorage ou da variável de estado de autenticação
+            localStorage.removeItem('token');
+            // Navegar para a tela de login ou outra página após o logout
+            navigate('/login'); // ou useNavigate('/login') se estiver usando react-router-dom
+        } else {
+            console.error('Falha ao fazer logout');
+        }
+    } catch (error) {
+        console.error('Erro ao fazer logout:', error);
+    }
+  }
+
+    
     const toggleSidebar = () => {
       setIsOpen(!isOpen);
     };
@@ -78,11 +98,8 @@ const Sidebar = () => {
                 </Link>
               </li>
               <li>
-                <Link
-                  
-                  className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
-                >
-                  <span onClick={logout} className="flex-1 ms-3 whitespace-nowrap">Logout</span>
+                <Link onClick={handlelogout} className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+                  <span  className="flex-1 ms-3 whitespace-nowrap">Logout</span>
                 </Link>
               </li>
             </ul>
