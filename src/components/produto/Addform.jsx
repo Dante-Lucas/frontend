@@ -11,8 +11,8 @@ export const Addform = () => {
     const [descricao, setDescricao] = useState('');
     const [preco, setPreco] = useState('');
     const [quantidade, setQuantidade] = useState('');
-    const [fabricante, setFabricante] = useState('');
-    const [categoria, setCategoria] = useState('');
+    const [fabricante, setFabricante] = useState([]);
+    const [categoria, setCategoria] = useState([]);
     // Função para abrir o modal de adição de categoria
     const openModalCategoria = () => {
         setModalCategoriaOpen(true);
@@ -41,13 +41,13 @@ export const Addform = () => {
                     'Authorization': `Token ${localStorage.getItem('token')}`
                 },
                 body: JSON.stringify({
-                    'fabricante': fabricante
+                    'nome': fabricante
                 })
             })
             if(!response.ok) throw new Error('Não foi possível adicionar o fabricante')
             const data = await response.json();
             setFabricante(data);
-            console.log(data)
+            closeModalFabricante()
         } catch(error) {
             console.log(error)
         }        
@@ -63,13 +63,13 @@ export const Addform = () => {
                     'Authorization': `Token ${localStorage.getItem('token')}`
                 },
                 body: JSON.stringify({
-                    'categoria': categoria
+                    'nome': categoria
                 })
             })
             if(!response.ok) throw new Error('Não foi possível adicionar a categoria')
             const data = await response.json();
             setCategoria(data);
-            console.log(data)
+            closeModalCategoria()
         } catch(error) {
             console.log(error)
         }
@@ -91,12 +91,22 @@ export const Addform = () => {
                     label="Nome do produto:" 
                     htmlFor="nome_produto" 
                     required
+                    value={produto}
+                    onChange={(e) => setProduto(e.target.value)}
                 />
                
                 {/* Campo para a descrição do produto */}
                 <div>
                     <label className="block text-gray-700 dark:text-gray-300 pb-2" htmlFor="descricao_produto">Descrição do produto:</label>
-                    <textarea className="block w-full resize-none rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 p-2" name="descricao" id="descricao_produto" cols="30" rows="5" placeholder="Descrição do produto"></textarea>
+                    <textarea 
+                        className="block w-full resize-none rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 p-2" 
+                        name="descricao" 
+                        id="descricao_produto" 
+                        cols="30" 
+                        rows="5" 
+                        placeholder="Descrição do produto" 
+                        value={descricao}
+                        onChange={(e) => setDescricao(e.target.value)}></textarea>
                 </div>
                
                 {/* Campos para o preço e o estoque do produto */}
@@ -110,6 +120,8 @@ export const Addform = () => {
                         label="Preço:" 
                         htmlFor="preco_produto" 
                         required
+                        value={preco}
+                        onChange={(e) => setPreco(e.target.value)}
                     />
 
                     <InputAdd 
@@ -120,6 +132,8 @@ export const Addform = () => {
                         label="Quantidade:" 
                         htmlFor="estoque_produto" 
                         required
+                        value={quantidade}
+                        onChange={(e) => setQuantidade(e.target.value)}
                     />
 
                 </div>
