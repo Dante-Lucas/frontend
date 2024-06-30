@@ -12,7 +12,6 @@ export const RegisterForm = () => {
   const [confirmPassword,setConfirmPassword] = useState("")
   const [telefone,setTelefone] = useState("")
   //const [data,setdata] = useState("")
-  const [message,setMessage] = useState("")
   const [error,setError] = useState("")
   const csrftoken = getCsrfToken()
   const navigate = useNavigate()
@@ -53,17 +52,8 @@ export const RegisterForm = () => {
       <form onSubmit={handlersubmit}  id="form_register"  className="space-y-4 md:space-y-6"  method="POST">
         {/* forma de renderizar um valor no html*/}
         {
-          message && 
-          <div className="p-4 mb-4 text-sm rounded-lg">
-            <span className=" font-medium text-green-800  bg-green-50 dark:bg-gray-800 dark:text-green-400">
-              {message}
-            </span>
-          </div>
-        }
-
-        {
           error && 
-          <div>
+          <div className="p-4 mb-4 text-sm rounded-lg">
             <span className="font-medium text-red-800 bg-red-50 dark:bg-gray-800 dark:text-red-400">
               {error}
             </span>

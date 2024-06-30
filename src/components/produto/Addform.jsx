@@ -1,6 +1,6 @@
 import { InputAdd } from "../inputs/Input"
 import { Modal } from "../partials/Modal"
-import { useState } from "react"
+import { useState,useEffect } from "react"
 // Componente que renderiza o formulário de cadastro de produto com os seus campos e opções para adicionar fabricante e categoria
 export const Addform = () => {
     // Estado para controlar o estado do modal de adição de categoria
@@ -11,9 +11,45 @@ export const Addform = () => {
     const [descricao, setDescricao] = useState('');
     const [preco, setPreco] = useState('');
     const [quantidade, setQuantidade] = useState('');
-    const [fabricante, setFabricante] = useState([]);
-    const [categoria, setCategoria] = useState([]);
+    const [fabricante, setFabricante] = useState('');
+    const [categoria, setCategoria] = useState('');
+    const [categorias, setCategorias] = useState([]);
+    const [fabricantes, setFabricantes] = useState([]);
     // Função para abrir o modal de adição de categoria
+    useEffect(() => {
+        const fetchselect = async () => {
+            try {
+                const response = await fetch('http://localhost:8000/api/v1/fabricante/',{
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Token ${localStorage.getItem('token')}`,
+                    },
+                });
+                if (!response.ok) {
+                    throw new Error('Não foi possível buscar os fabricantes');
+                }
+                const data = await response.json();
+                setFabricantes(data);
+                const response2 = await fetch('http://localhost:8000/api/v1/categoria/',{
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Token ${localStorage.getItem('token')}`,
+                    },
+                });
+                if(!response2.ok) {
+                    throw new Error('Não foi possível buscar as categorias');
+                }
+                const data2 = await response2.json();
+                setCategorias(data2);
+            } catch (error) {
+                console.log(error);
+            }
+        } 
+    fetchselect()
+    }, []);
+
     const openModalCategoria = () => {
         setModalCategoriaOpen(true);
     }
@@ -46,7 +82,7 @@ export const Addform = () => {
             })
             if(!response.ok) throw new Error('Não foi possível adicionar o fabricante')
             const data = await response.json();
-            setFabricante(data);
+            setFabricantes(data);
             closeModalFabricante()
         } catch(error) {
             console.log(error)
@@ -68,7 +104,7 @@ export const Addform = () => {
             })
             if(!response.ok) throw new Error('Não foi possível adicionar a categoria')
             const data = await response.json();
-            setCategoria(data);
+            setCategorias(data);
             closeModalCategoria()
         } catch(error) {
             console.log(error)
@@ -144,7 +180,9 @@ export const Addform = () => {
                         <label className="block text-gray-700 dark:text-gray-300 pb-2" htmlFor="fabricante_produto">Fabricante:</label>
                         <select className="block w-full rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 p-2" type="select" name="fabricante_produto" id="fabricante_produto" placeholder="Fabricante">
                             <option value="" selected disabled>Fabricante</option>
-                            
+                            {fabricantes.map((fabricante) => (
+                                <option key={fabricante.id} value={fabricante.id}>{fabricante.nome}</option>
+                            ))}
                         </select>
                         
                     </div>
@@ -152,7 +190,9 @@ export const Addform = () => {
                         <label className="block text-gray-700 dark:text-gray-300 pb-2" htmlFor="categoria_produto">Categoria:</label>
                         <select className="block w-full rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 p-2" name="categoria_produto" id="categoria_produto" placeholder="Categoria">
                             <option value="" selected disabled>Categoria</option>
-                            
+                            {categorias.map((categoria) => (
+                                <option key={categoria.id} value={categoria.id}>{categoria.nome}</option>
+                            ))}
                         </select>
                     </div>
                 </div>

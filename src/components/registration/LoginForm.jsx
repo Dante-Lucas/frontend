@@ -6,13 +6,17 @@ import { setCsrfToken } from "../../scripts/cookies";
 export function LoginForm() {
     const [username,setUsername] = useState("")
     const [password,setPassword] = useState("")
-    const [message,setMessage] = useState("")
+    const [error,setError] = useState("")
     const navigate = useNavigate()
     const handlersubmit  = async(e) => {
         e.preventDefault();
         if (username.trim() ===''){
-            setMessage("Preencha o campo username")
+            setError("Preencha o campo username")
         }
+        if(password.trim() ===''){
+            setError("Preencha o campo password")
+        }
+    
 
         try{
             const response = await fetch("http://127.0.0.1:8000/api/v1/login/",{
@@ -38,6 +42,14 @@ export function LoginForm() {
         
     return (
         <form id="form-login" onSubmit={handlersubmit} className="space-y-4 md:space-y-6"   method="POST">
+            {
+            error && 
+            <div>
+                <span className="font-medium text-red-800 bg-red-50 dark:bg-gray-800 dark:text-red-400">
+                {error}
+                </span>
+            </div>
+            }
             <Input 
                 label="Username" 
                 htmlFor='username' 

@@ -38,13 +38,7 @@ export const ProdutoForm = () => {
         } 
     fetchfiltros()
     }, []);
-    const handleFabricanteChange = (event) => {
-        setFabricante(event.target.value);
-    };
-
-    const handleCategoriaChange = (event) => {
-        setCategoria(event.target.value);
-    };
+    
 
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -60,8 +54,7 @@ export const ProdutoForm = () => {
                 <select
                     name="fabricante"
                     id="fabricante"
-                    value={fabricante}
-                    onChange={handleFabricanteChange}
+                    
                     className="px-2 py-1 sm:w-28 md:w-36 rounded-lg bg-white dark:bg-gray-800 text-sm font-normal text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-700 outline-none transition-all placeholder-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
                 >
                     <option value="" selected disabled>Fabricante</option>
@@ -74,8 +67,8 @@ export const ProdutoForm = () => {
                 <select
                     name="categoria"
                     id="categoria"
-                    value={categoria}
-                    onChange={handleCategoriaChange}
+                    
+                    
                     className="px-2 py-1 sm:w-28 md:w-36 rounded-lg bg-white dark:bg-gray-800 text-sm font-normal text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-700 outline-none transition-all placeholder-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
                 >
                     <option value="" selected disabled>Categoria</option>

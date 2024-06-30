@@ -11,7 +11,7 @@ export function Router() {
         <Route path="/" element={<DefaultLayout />}>
             {/* Feed receberá o path do DefaultLayout (no caso "/") mais o path do Feed, portanto será "/" + "/feed" */}
           <Route path="/register" element={<Register/>} />
-          <Route path="/login" element={<Login/>} />
+          <Route path="/" element={<Login/>} />
           <Route path='/produto' element={<Produtos />} />
           <Route path="/add" element={<AddProduct />} />
         </Route>
